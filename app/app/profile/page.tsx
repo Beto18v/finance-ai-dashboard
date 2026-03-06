@@ -174,15 +174,6 @@ export default function ProfilePage() {
               className="bg-muted text-muted-foreground cursor-not-allowed"
             />
           </div>
-
-          <div className="space-y-1.5">
-            <Label>User ID</Label>
-            <Input
-              value={profile?.id ?? ""}
-              readOnly
-              className="bg-muted text-muted-foreground cursor-not-allowed font-mono text-xs"
-            />
-          </div>
         </CardContent>
       </Card>
 
@@ -199,10 +190,7 @@ export default function ProfilePage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            variant="destructive"
-            onClick={() => setConfirmDelete(true)}
-          >
+          <Button variant="destructive" onClick={() => setConfirmDelete(true)}>
             Delete account
           </Button>
         </CardContent>
