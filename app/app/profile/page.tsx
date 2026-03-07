@@ -8,6 +8,8 @@ import { api, ApiError, type UserProfile } from "@/lib/api";
 import { getCache, setCache, clearUserCache } from "@/lib/cache";
 import { useSession } from "@/components/providers/auth-provider";
 import { createClient } from "@/lib/supabase/client";
+import { useSitePreferences } from "@/components/providers/site-preferences-provider";
+import { PreferencesCard } from "./components/preferences-card";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +38,8 @@ type SaveStatus = "idle" | "saving" | "saved";
 export default function ProfilePage() {
   const router = useRouter();
   const { signOut } = useSession();
+  const { site } = useSitePreferences();
+  const t = site.pages.profile;
 
   const [profile, setProfile] = useState<UserProfile | null>(() =>
     getCache<UserProfile>(CACHE_KEY),
@@ -86,7 +90,7 @@ export default function ProfilePage() {
     } catch (err) {
       setSaveStatus("idle");
       if (err instanceof ApiError) toast.error(err.message);
-      else toast.error("Failed to save name");
+      else toast.error(t.failedSaveName);
     }
   }
 
@@ -98,43 +102,41 @@ export default function ProfilePage() {
       const supabase = createClient();
       await supabase.auth.signOut();
       await signOut();
-      toast.success("Account deleted");
+      toast.success(t.deleted);
       router.replace("/auth/register");
     } catch (err) {
       setDeleting(false);
       setConfirmDelete(false);
       if (err instanceof ApiError) toast.error(err.message);
-      else toast.error("Failed to delete account");
+      else toast.error(t.failedDeleteAccount);
     }
   }
 
   return (
     <div className="max-w-lg space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Profile</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Manage your account information.
-        </p>
+        <h1 className="text-2xl font-bold">{t.title}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t.subtitle}</p>
       </div>
 
       {/* Account info */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Account information</CardTitle>
-          <CardDescription>
-            Your name is editable and saves automatically.
-          </CardDescription>
+          <CardTitle className="text-base">{t.infoCardTitle}</CardTitle>
+          <CardDescription>{t.infoCardDescription}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="name">Full name</Label>
+              <Label htmlFor="name">{t.fullName}</Label>
               {saveStatus === "saving" && (
-                <span className="text-xs text-muted-foreground">Saving…</span>
+                <span className="text-xs text-muted-foreground">
+                  {t.saving}
+                </span>
               )}
               {saveStatus === "saved" && (
                 <span className="text-xs text-green-600 font-medium">
-                  Saved
+                  {t.saved}
                 </span>
               )}
             </div>
@@ -142,32 +144,33 @@ export default function ProfilePage() {
               id="name"
               value={name}
               onChange={handleNameChange}
-              placeholder="Your name"
+              placeholder={t.fullNamePlaceholder}
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label>Email</Label>
+            <Label>{t.email}</Label>
             <Input
               value={profile?.email ?? ""}
               readOnly
               className="bg-muted text-muted-foreground cursor-not-allowed"
             />
-            <p className="text-xs text-muted-foreground">
-              Email is managed via authentication and cannot be changed here.
-            </p>
+            <p className="text-xs text-muted-foreground">{t.emailHint}</p>
           </div>
 
           <div className="space-y-1.5">
-            <Label>Member since</Label>
+            <Label>{t.memberSince}</Label>
             <Input
               value={
                 profile
-                  ? new Date(profile.created_at).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
+                  ? new Date(profile.created_at).toLocaleDateString(
+                      t.dateLocale,
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      },
+                    )
                   : ""
               }
               readOnly
@@ -179,19 +182,21 @@ export default function ProfilePage() {
 
       <Separator />
 
+      <PreferencesCard />
+
+      <Separator />
+
       {/* Danger zone */}
       <Card className="border-destructive/40">
         <CardHeader>
           <CardTitle className="text-base text-destructive">
-            Danger zone
+            {t.dangerTitle}
           </CardTitle>
-          <CardDescription>
-            Permanently delete your account and all associated data.
-          </CardDescription>
+          <CardDescription>{t.dangerDescription}</CardDescription>
         </CardHeader>
         <CardContent>
           <Button variant="destructive" onClick={() => setConfirmDelete(true)}>
-            Delete account
+            {t.deleteAccount}
           </Button>
         </CardContent>
       </Card>
@@ -200,12 +205,8 @@ export default function ProfilePage() {
       <Dialog open={confirmDelete} onOpenChange={setConfirmDelete}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete account?</DialogTitle>
-            <DialogDescription>
-              This action is <strong>permanent</strong>. Your profile,
-              transactions, and categories will be deleted and cannot be
-              recovered.
-            </DialogDescription>
+            <DialogTitle>{t.confirmDeleteTitle}</DialogTitle>
+            <DialogDescription>{t.confirmDeleteDescription}</DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button
@@ -213,14 +214,14 @@ export default function ProfilePage() {
               onClick={() => setConfirmDelete(false)}
               disabled={deleting}
             >
-              Cancel
+              {site.common.cancel}
             </Button>
             <Button
               variant="destructive"
               onClick={handleDeleteAccount}
               disabled={deleting}
             >
-              {deleting ? "Deleting…" : "Yes, delete my account"}
+              {deleting ? t.deleting : t.confirmDeleteButton}
             </Button>
           </DialogFooter>
         </DialogContent>

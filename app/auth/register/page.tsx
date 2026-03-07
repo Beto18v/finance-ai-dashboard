@@ -10,21 +10,25 @@ import { toast } from "sonner";
 
 import { createClient } from "@/lib/supabase/client";
 import { useSession } from "@/components/providers/auth-provider";
+import { useSitePreferences } from "@/components/providers/site-preferences-provider";
+import { getSiteText } from "@/lib/site";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+const schemaText = getSiteText().auth.register;
+
 const schema = z
   .object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
+    name: z.string().min(1, schemaText.validations.nameRequired),
+    email: z.string().email(schemaText.validations.invalidEmail),
+    password: z.string().min(8, schemaText.validations.passwordMin),
+    confirmPassword: z.string().min(1, schemaText.validations.confirmRequired),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: schemaText.validations.passwordsDontMatch,
     path: ["confirmPassword"],
   });
 
@@ -33,6 +37,8 @@ type FormValues = z.infer<typeof schema>;
 export default function RegisterPage() {
   const router = useRouter();
   const { session, loading } = useSession();
+  const { site } = useSitePreferences();
+  const t = site.auth.register;
 
   const {
     register,
@@ -61,9 +67,7 @@ export default function RegisterPage() {
       return;
     }
 
-    toast.success(
-      "Account created! Please check your email to confirm your account.",
-    );
+    toast.success(t.successToast);
     router.replace("/auth/login");
   }
 
@@ -71,12 +75,12 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Create account</CardTitle>
+          <CardTitle>{t.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
+              <Label htmlFor="name">{t.name}</Label>
               <Input id="name" type="text" {...register("name")} />
               {errors.name && (
                 <p className="text-sm text-destructive">
@@ -85,7 +89,7 @@ export default function RegisterPage() {
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.email}</Label>
               <Input id="email" type="email" {...register("email")} />
               {errors.email && (
                 <p className="text-sm text-destructive">
@@ -94,7 +98,7 @@ export default function RegisterPage() {
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t.password}</Label>
               <Input id="password" type="password" {...register("password")} />
               {errors.password && (
                 <p className="text-sm text-destructive">
@@ -103,7 +107,7 @@ export default function RegisterPage() {
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
               <Input
                 id="confirmPassword"
                 type="password"
@@ -116,12 +120,12 @@ export default function RegisterPage() {
               )}
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Creating account…" : "Create account"}
+              {isSubmitting ? t.submitting : t.submit}
             </Button>
             <p className="text-center text-sm text-muted-foreground">
-              Already have an account?{" "}
+              {t.hasAccount}{" "}
               <Link href="/auth/login" className="underline">
-                Sign in
+                {t.signIn}
               </Link>
             </p>
           </form>
