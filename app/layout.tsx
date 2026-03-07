@@ -38,7 +38,7 @@ export default function RootLayout({
           <SitePreferencesProvider>
             <AuthProvider>
               {children}
-              <Toaster richColors position="top-right" />
+              <Toaster richColors position="top-center" />
             </AuthProvider>
           </SitePreferencesProvider>
         </ThemeProvider>
