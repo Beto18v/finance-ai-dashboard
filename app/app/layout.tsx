@@ -77,13 +77,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             href="/app/transactions"
             className="flex items-center gap-1.5 shrink-0"
           >
-            <span className="font-bold text-base tracking-tight">
-              finance<span className="text-primary">AI</span>
+            <span className="font-bold text-base tracking-tight text-green-600">
+              Dine<span className="text-primary">rance</span>
             </span>
           </Link>
 
           {/* Nav */}
-          <nav className="flex items-center gap-1 flex-1">
+          <nav className="flex items-left gap-1 flex-1">
             {navLinks.map((link) => {
               const active = pathname === link.href;
               return (

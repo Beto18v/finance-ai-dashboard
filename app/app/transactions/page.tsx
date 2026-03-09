@@ -142,7 +142,7 @@ export default function TransactionsPage() {
         if (!silent) setListLoading(false);
       }
     },
-    [],
+    [t.failedLoad],
   );
 
   // Load categories on mount

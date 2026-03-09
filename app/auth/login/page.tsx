@@ -17,7 +17,8 @@ import { getSiteText } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Image from "next/image";
 
 const schemaText = getSiteText().auth.login;
 
@@ -83,7 +84,13 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>{t.title}</CardTitle>
+          <Image
+            src="/logo_Dinerance-removebg.png"
+            alt="Dinerance Logo"
+            width={100}
+            height={100}
+            className="mx-auto"
+          />
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

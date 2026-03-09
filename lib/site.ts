@@ -10,8 +10,8 @@ export function isSiteLocale(value: string): value is SiteLocale {
 const siteTexts = {
   es: {
     metadata: {
-      title: "Finance AI",
-      description: "Panel de Finance AI",
+      title: "Dinerance",
+      description: "Panel de Dinerance",
       htmlLang: "es",
     },
     common: {
@@ -204,8 +204,8 @@ const siteTexts = {
   },
   en: {
     metadata: {
-      title: "Finance AI",
-      description: "Finance AI Dashboard",
+      title: "Dinerance",
+      description: "Dinerance Dashboard",
       htmlLang: "en",
     },
     common: {

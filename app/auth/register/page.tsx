@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,8 @@ import { getSiteText } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import Image from "next/image";
 
 const schemaText = getSiteText().auth.register;
 
@@ -47,24 +48,27 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  async function bootstrapProfile(values: { name: string; email: string }) {
-    try {
-      await api.createProfile({ name: values.name, email: values.email });
-      toast.success(t.profileCreatedToast);
-      router.replace("/app/transactions");
-      return true;
-    } catch (err) {
-      // If profile already exists, continue to dashboard.
-      if (err instanceof ApiError && err.status === 409) {
+  const bootstrapProfile = useCallback(
+    async (values: { name: string; email: string }) => {
+      try {
+        await api.createProfile({ name: values.name, email: values.email });
+        toast.success(t.profileCreatedToast);
         router.replace("/app/transactions");
         return true;
+      } catch (err) {
+        // If profile already exists, continue to dashboard.
+        if (err instanceof ApiError && err.status === 409) {
+          router.replace("/app/transactions");
+          return true;
+        }
+        toast.error(
+          err instanceof ApiError ? err.message : site.common.unexpectedError,
+        );
+        return false;
       }
-      toast.error(
-        err instanceof ApiError ? err.message : site.common.unexpectedError,
-      );
-      return false;
-    }
-  }
+    },
+    [router, t.profileCreatedToast, site.common.unexpectedError],
+  );
 
   useEffect(() => {
     if (!loading && session) {
@@ -94,7 +98,7 @@ export default function RegisterPage() {
           await createClient().auth.signOut();
         });
     }
-  }, [session, loading, router]);
+  }, [session, loading, router, bootstrapProfile, site.common.unexpectedError]);
 
   async function onSubmit(values: FormValues) {
     const supabase = createClient();
@@ -159,7 +163,13 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>{t.title}</CardTitle>
+          <Image
+            src="/logo_Dinerance-removebg.png"
+            alt="Dinerance Logo"
+            width={100}
+            height={100}
+            className="mx-auto"
+          />
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
