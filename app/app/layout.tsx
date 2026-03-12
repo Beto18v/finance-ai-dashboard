@@ -15,6 +15,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [profileReady, setProfileReady] = useState(false);
   const navLinks = [
+    { href: "/app/balance", label: site.appLayout.nav.balance },
     { href: "/app/transactions", label: site.appLayout.nav.transactions },
     { href: "/app/categories", label: site.appLayout.nav.categories },
     { href: "/app/profile", label: site.appLayout.nav.profile },
@@ -74,7 +75,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-6">
           {/* Brand */}
           <Link
-            href="/app/transactions"
+            href="/app/balance"
             className="flex items-center gap-1.5 shrink-0"
           >
             <span className="font-bold text-base tracking-tight text-green-600">

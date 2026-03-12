@@ -43,7 +43,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!loading && session) {
-      router.replace("/app/transactions");
+      router.replace("/app/balance");
     }
   }, [session, loading, router]);
 
@@ -77,7 +77,7 @@ export default function LoginPage() {
     }
 
     toast.success(t.successToast);
-    router.replace("/app/transactions");
+    router.replace("/app/balance");
   }
 
   return (

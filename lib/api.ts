@@ -88,6 +88,18 @@ export interface Transaction {
   created_at: string;
 }
 
+export interface BalanceMonth {
+  month_start: string;
+  income: string;
+  expense: string;
+  balance: string;
+}
+
+export interface BalanceOverview {
+  current: BalanceMonth;
+  series: BalanceMonth[];
+}
+
 // ── Endpoints ────────────────────────────────────────────────────────────────
 
 export const api = {
@@ -152,6 +164,14 @@ export const api = {
     if (params?.offset != null) qs.set("offset", String(params.offset));
     const query = qs.toString() ? `?${qs.toString()}` : "";
     return request<Transaction[]>(`/transactions/${query}`);
+  },
+
+  getMonthlyBalance: (params?: { year?: number; month?: number }) => {
+    const qs = new URLSearchParams();
+    if (params?.year != null) qs.set("year", String(params.year));
+    if (params?.month != null) qs.set("month", String(params.month));
+    const query = qs.toString() ? `?${qs.toString()}` : "";
+    return request<BalanceOverview>(`/balance/monthly${query}`);
   },
 
   createTransaction: (body: {

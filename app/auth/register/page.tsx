@@ -53,12 +53,12 @@ export default function RegisterPage() {
       try {
         await api.createProfile({ name: values.name, email: values.email });
         toast.success(t.profileCreatedToast);
-        router.replace("/app/transactions");
+        router.replace("/app/balance");
         return true;
       } catch (err) {
         // If profile already exists, continue to dashboard.
         if (err instanceof ApiError && err.status === 409) {
-          router.replace("/app/transactions");
+          router.replace("/app/balance");
           return true;
         }
         toast.error(
@@ -74,7 +74,7 @@ export default function RegisterPage() {
     if (!loading && session) {
       api
         .getProfile()
-        .then(() => router.replace("/app/transactions"))
+        .then(() => router.replace("/app/balance"))
         .catch(async (err) => {
           if (err instanceof ApiError && err.status === 404) {
             const bootstrapName =

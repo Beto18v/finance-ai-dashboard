@@ -107,19 +107,22 @@ export default function CategoriesPage() {
   const editDirectionValue = watchEdit("direction");
   const editParentIdValue = watchEdit("parent_id");
 
-  const loadCategories = useCallback(async (silent = false) => {
-    if (!silent) setListLoading(true);
-    try {
-      const data = await api.getCategories();
-      setCategories(data);
-      setCache(CACHE_KEY, data);
-    } catch (err) {
-      if (err instanceof ApiError) toast.error(err.message);
-      else toast.error(t.failedLoad);
-    } finally {
-      if (!silent) setListLoading(false);
-    }
-  }, []);
+  const loadCategories = useCallback(
+    async (silent = false) => {
+      if (!silent) setListLoading(true);
+      try {
+        const data = await api.getCategories();
+        setCategories(data);
+        setCache(CACHE_KEY, data);
+      } catch (err) {
+        if (err instanceof ApiError) toast.error(err.message);
+        else toast.error(t.failedLoad);
+      } finally {
+        if (!silent) setListLoading(false);
+      }
+    },
+    [t.failedLoad],
+  );
 
   useEffect(() => {
     loadCategories(!!getCache(CACHE_KEY));

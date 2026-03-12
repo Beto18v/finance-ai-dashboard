@@ -38,6 +38,7 @@ const siteTexts = {
     },
     appLayout: {
       nav: {
+        balance: "Balance",
         transactions: "Transacciones",
         categories: "Categorias",
         profile: "Perfil",
@@ -82,6 +83,20 @@ const siteTexts = {
       },
     },
     pages: {
+      balance: {
+        title: "Balance",
+        subtitle: "Resumen financiero del mes seleccionado y su historico.",
+        heading: (monthLabel: string) => `Resumen financiero - ${monthLabel}`,
+        monthLabel: "Mes",
+        latestMonthHint:
+          "Si no eliges un mes, se muestra el ultimo mes con movimientos.",
+        currentCardDescription:
+          "Vista consolidada de ingresos, gastos y balance.",
+        historyTitle: "Balance mensual",
+        historyDescription: "Todos los meses con movimientos registrados.",
+        noHistory: "Todavia no hay movimientos para calcular el balance.",
+        selectedMonthEmpty: "No hay movimientos en el mes seleccionado.",
+      },
       categories: {
         title: "Categorias",
         subtitle: "Organiza tus transacciones por ingresos y gastos.",
@@ -232,6 +247,7 @@ const siteTexts = {
     },
     appLayout: {
       nav: {
+        balance: "Balance",
         transactions: "Transactions",
         categories: "Categories",
         profile: "Profile",
@@ -276,6 +292,20 @@ const siteTexts = {
       },
     },
     pages: {
+      balance: {
+        title: "Balance",
+        subtitle: "Financial summary for the selected month and full history.",
+        heading: (monthLabel: string) => `Financial summary - ${monthLabel}`,
+        monthLabel: "Month",
+        latestMonthHint:
+          "Without a filter, the latest month with activity is shown.",
+        currentCardDescription:
+          "Consolidated view of income, expenses, and balance.",
+        historyTitle: "Monthly balance",
+        historyDescription: "Every month with recorded activity.",
+        noHistory: "There is no activity yet to calculate the balance.",
+        selectedMonthEmpty: "There is no activity in the selected month.",
+      },
       categories: {
         title: "Categories",
         subtitle:
