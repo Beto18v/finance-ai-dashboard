@@ -1,6 +1,6 @@
-# Finance AI Dashboard
+# Dinerance Dashboard
 
-Frontend del proyecto Finance AI. Construido con Next.js 16 App Router, shadcn/ui, Tailwind CSS y Supabase Auth. Consume la API REST de `finance-ai-api`.
+Frontend del proyecto Dinerance. Construido con Next.js 16 App Router, shadcn/ui, Tailwind CSS y Supabase Auth. Consume la API REST de `dinerance-api`.
 
 ## Stack
 
@@ -38,7 +38,7 @@ npm run dev
 
 Abre `http://localhost:3000`.
 
-Requisito previo: el backend `finance-ai-api` debe estar corriendo en la URL configurada en `NEXT_PUBLIC_API_BASE_URL`.
+Requisito previo: el backend `dinerance-api` debe estar corriendo en la URL configurada en `NEXT_PUBLIC_API_BASE_URL`.
 
 ## Estructura
 
