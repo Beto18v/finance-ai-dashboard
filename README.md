@@ -16,18 +16,19 @@ Frontend del proyecto Dinerance. Construido con Next.js 16 App Router, shadcn/ui
 Crea `.env` o `.env.local` en la raiz del proyecto:
 
 ```env
-# URL base del backend FastAPI
-NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+# Obligatoria: URL base del backend FastAPI
+NEXT_PUBLIC_API_BASE_URL=https://dinerance-api-prod.azurewebsites.net
 
-# URL publica del dashboard para redirects OAuth
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-
-# Proyecto Supabase -> Settings -> API
+# Obligatorias: proyecto Supabase -> Settings -> API
 NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon-public-key>
+
+# Opcional/recomendada: URL publica canonica del dashboard
+# NEXT_PUBLIC_SITE_URL=https://tu-dashboard.vercel.app
 ```
 
 La `anon key` es publica. No uses `service_role` en el frontend.
+`NEXT_PUBLIC_SITE_URL` ya no es obligatoria para Google OAuth: el frontend usa primero el origen real del navegador para evitar redirects a `localhost` en Vercel.
 
 ## Instalacion y ejecucion
 
@@ -81,9 +82,43 @@ lib/
 ## Flujo Google
 
 1. El usuario pulsa Google en `login` o `register`.
-2. Supabase redirige a Google y luego vuelve a `NEXT_PUBLIC_SITE_URL/auth/callback`.
+2. Supabase redirige a Google y luego vuelve a `<origen-actual>/auth/callback`.
 3. El callback obtiene la sesion y llama al backend para crear o sincronizar el perfil local.
 4. Si todo sale bien, redirige a `/app/balance`.
+
+## Deploy en Vercel
+
+- Framework Preset: `Next.js` (auto-detectado)
+- Root Directory: raiz del repo `dinerance-dashboard`
+- Install Command: automatico (`npm install`)
+- Build Command: automatico desde `package.json` (`npm run build` -> `next build`)
+- Output Directory: automatica de Next.js
+
+### Variables para Vercel
+
+Obligatorias:
+
+- `NEXT_PUBLIC_API_BASE_URL=https://dinerance-api-prod.azurewebsites.net`
+- `NEXT_PUBLIC_SUPABASE_URL=<tu valor actual de Supabase>`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY=<tu valor actual anon/public>`
+
+Recomendada:
+
+- `NEXT_PUBLIC_SITE_URL=https://tu-dominio-produccion`
+
+### Ajustes en Supabase Auth
+
+En Supabase Dashboard -> Authentication -> URL Configuration:
+
+- `Site URL`: tu dominio publico de produccion en Vercel
+- Redirect URLs:
+  - `https://tu-dominio-produccion/auth/callback`
+  - `http://localhost:3000/**`
+  - `https://*-<team-or-account-slug>.vercel.app/**`
+
+### Ajustes en Google Provider
+
+Si usas Google via Supabase, en Google Cloud el redirect URI autorizado debe ser el callback de Supabase (`https://<project-ref>.supabase.co/auth/v1/callback`), no el dominio del frontend. El dominio del frontend se controla en Supabase URL Configuration con `Site URL` y `Redirect URLs`.
 
 ## Build de produccion
 

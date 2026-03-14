@@ -1,6 +1,12 @@
 import { createClient } from "@/lib/supabase/client";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+function getApiBaseUrl() {
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  if (!apiBaseUrl) {
+    throw new Error("Missing NEXT_PUBLIC_API_BASE_URL");
+  }
+  return apiBaseUrl.replace(/\/+$/, "");
+}
 
 export class ApiError extends Error {
   constructor(
@@ -38,7 +44,7 @@ async function request<T>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const res = await fetch(`${getApiBaseUrl()}${path}`, {
     ...options,
     headers,
   });
